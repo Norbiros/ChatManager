@@ -38,15 +38,16 @@ public class ListenerChatFormat implements Listener {
 
 		format = config.getConfigurationSection("Chat_Format.Groups." + key) != null ? config.getString("Chat_Format.Groups." + key + ".Format") : config.getString("Chat_Format.Default_Format");
 
-		format = setupPlaceholderAPI(player, format);
-		format = this.placeholderManager.setPlaceholders(player, format);
-		format = setupChatRadius(player, format);
-		format = this.plugin.getMethods().color(format);
-		format = format.replace("{message}", message);
-		format = format.replaceAll("%", "%%");
-
-		event.setFormat(format);
-		event.setMessage(message);
+		event.setCancelled(true);
+		for (Player to : event.getRecipients()) {
+			String localMessage = this.placeholderManager.setPlaceholders(player, format);
+			localMessage = this.placeholderManager.setRelationalPlaceholders(player, to, localMessage);
+			localMessage = setupChatRadius(player, localMessage);
+			localMessage = this.plugin.getMethods().color(localMessage);
+			localMessage = localMessage.replace("{message}", message);
+			localMessage = localMessage.replaceAll("%", "%%");
+			to.sendMessage(localMessage);
+		}
 	}
 
 	public String setupChatRadius(Player player, String message) {

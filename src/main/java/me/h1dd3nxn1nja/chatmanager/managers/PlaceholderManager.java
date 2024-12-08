@@ -29,7 +29,7 @@ public class PlaceholderManager {
 		FileConfiguration config = Files.CONFIG.getFile();
 
 		DecimalFormat df = new DecimalFormat("#,###");
-		
+
 		UUID uuid = player.getUniqueId();
 
 		placeholders = this.plugin.getMethods().color(uuid, placeholders.replace("{player}", player.getName()));
@@ -53,7 +53,16 @@ public class PlaceholderManager {
 			placeholders = this.plugin.getMethods().color(uuid, placeholders.replace("{ess_player_nickname}", this.essentialsSupport.getPlayerNickname(player.getUniqueId())));
 		}
 
-		if (PluginSupport.PLACEHOLDERAPI.isPluginEnabled()) placeholders = PlaceholderAPI.setPlaceholders(player, placeholders);
+		if (PluginSupport.PLACEHOLDERAPI.isPluginEnabled())
+			placeholders = PlaceholderAPI.setPlaceholders(player, placeholders);
+
+		return placeholders;
+	}
+
+	public String setRelationalPlaceholders(Player player, Player to, String placeholders) {
+		placeholders = setPlaceholders(player, placeholders);
+		if (PluginSupport.PLACEHOLDERAPI.isPluginEnabled())
+			placeholders = PlaceholderAPI.setRelationalPlaceholders(to, player, placeholders);
 
 		return placeholders;
 	}
